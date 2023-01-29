@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 import mongoose from "mongoose";
 
 type Card = any;

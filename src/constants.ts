@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 export const CODE_SUCCESS_RESPONSE = 200;
 export const ERROR_CODE_UNCORRECT_RESPONSE_DATA = 400;
 export const ERROR_CODE_DATA_NOT_FOUND = 404;

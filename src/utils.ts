@@ -1,10 +1,9 @@
-import { Request, Response } from "express";
+/* eslint-disable quotes */
+import { Response } from "express";
 import {
   ERROR_CODE_UNCORRECT_RESPONSE_DATA,
-  ERROR_CODE_DATA_NOT_FOUND,
   SERVER_ERROR_CODE,
   message_400,
-  message_404,
   message_500,
 } from "./constants";
 
