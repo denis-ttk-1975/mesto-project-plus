@@ -7,7 +7,7 @@ import { IRequest } from "./../app";
 import errorHandler from "./../utils";
 import {
   ERROR_CODE_UNCORRECT_RESPONSE_DATA,
-  message_404,
+  MESSAGE_404,
 } from "./../constants";
 
 export const createUser = (req: Request, res: Response) => {
@@ -31,7 +31,7 @@ export const getUser = (req: Request, res: Response) => {
       if (!user.length) {
         res
           .status(ERROR_CODE_UNCORRECT_RESPONSE_DATA)
-          .send({ message: message_404 });
+          .send({ message: MESSAGE_404 });
       } else {
         res.send({ data: user });
       }

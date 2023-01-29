@@ -6,7 +6,7 @@ import Card from "../models/cards";
 import errorHandler from "./../utils";
 import {
   ERROR_CODE_UNCORRECT_RESPONSE_DATA,
-  message_404,
+  MESSAGE_404,
 } from "./../constants";
 
 interface IRequest extends Request {
@@ -35,7 +35,7 @@ export const deleteCard = (req: Request, res: Response) => {
     if (!card) {
       return res
         .status(ERROR_CODE_UNCORRECT_RESPONSE_DATA)
-        .send({ message: message_404 });
+        .send({ message: MESSAGE_404 });
     }
   });
 
@@ -53,7 +53,7 @@ export const likeCard = (req: IRequest, res: Response) => {
     if (!card) {
       return res
         .status(ERROR_CODE_UNCORRECT_RESPONSE_DATA)
-        .send({ message: message_404 });
+        .send({ message: MESSAGE_404 });
     }
   });
 
@@ -75,7 +75,7 @@ export const dislikeCard = (req: IRequest, res: Response) => {
     if (!card) {
       return res
         .status(ERROR_CODE_UNCORRECT_RESPONSE_DATA)
-        .send({ message: message_404 });
+        .send({ message: MESSAGE_404 });
     }
   });
 
