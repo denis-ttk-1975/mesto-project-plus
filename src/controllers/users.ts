@@ -2,13 +2,10 @@
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 
-import User from "./../models/users";
-import { IRequest } from "./../app";
-import errorHandler from "./../utils";
-import {
-  ERROR_CODE_UNCORRECT_RESPONSE_DATA,
-  MESSAGE_404,
-} from "./../constants";
+import User from "../models/users";
+import { IRequest } from "../app";
+import errorHandler from "../utils";
+import { ERROR_CODE_UNCORRECT_RESPONSE_DATA, MESSAGE_404 } from "../constants";
 
 export const createUser = (req: Request, res: Response) => {
   const { name, about, avatar } = req.body;

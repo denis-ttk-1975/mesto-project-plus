@@ -3,11 +3,8 @@
 import { Request, Response } from "express";
 
 import Card from "../models/cards";
-import errorHandler from "./../utils";
-import {
-  ERROR_CODE_UNCORRECT_RESPONSE_DATA,
-  MESSAGE_404,
-} from "./../constants";
+import errorHandler from "../utils";
+import { ERROR_CODE_UNCORRECT_RESPONSE_DATA, MESSAGE_404 } from "../constants";
 
 interface IRequest extends Request {
   user?: Record<string, string>;
