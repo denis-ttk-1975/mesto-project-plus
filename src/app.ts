@@ -1,13 +1,14 @@
 /* eslint-disable quotes */
-import express, { Request, Response, NextFunction } from "express";
+import express, { Response, NextFunction } from "express";
 import mongoose from "mongoose";
 
+import { IRequest } from "./types";
 import usersRouter from "./routes/users";
 import cardsRouter from "./routes/cards";
 
-export interface IRequest extends Request {
-  user?: Record<string, string>;
-}
+// export interface IRequest extends Request {
+//   user?: Record<string, string>;
+// }
 
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;

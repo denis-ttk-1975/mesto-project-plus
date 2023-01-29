@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 
 import User from "../models/users";
-import { IRequest } from "../app";
+import { IRequest } from "../types";
 import errorHandler from "../utils";
 import { ERROR_CODE_UNCORRECT_RESPONSE_DATA, MESSAGE_404 } from "../constants";
 

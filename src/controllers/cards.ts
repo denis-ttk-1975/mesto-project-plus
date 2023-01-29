@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
-// eslint-disable-next-line quotes
+
 import { Request, Response } from "express";
 
 import Card from "../models/cards";
