@@ -7,11 +7,7 @@ import { ObjectId } from "mongodb";
 import User from "../models/users";
 import { IRequest } from "../types";
 import errorHandler from "../utils";
-import {
-  ERROR_CODE_UNCORRECT_RESPONSE_DATA,
-  MESSAGE_404,
-  CODE_SUCCESS_RESPONSE,
-} from "../constants";
+import { MESSAGE_404, CODE_SUCCESS_RESPONSE } from "../constants";
 
 export const createUser = (req: Request, res: Response) => {
   const { name, about, avatar } = req.body;
@@ -31,15 +27,7 @@ export const getUser = (req: Request, res: Response) => {
   return User.find({ _id: new ObjectId(_id) })
     .orFail(new Error(MESSAGE_404))
     .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
-    .catch((err) => {
-      if (err.message === MESSAGE_404) {
-        res
-          .status(ERROR_CODE_UNCORRECT_RESPONSE_DATA)
-          .send({ message: MESSAGE_404 });
-      } else {
-        errorHandler(err, res);
-      }
-    });
+    .catch((err) => errorHandler(err, res));
 };
 
 export const patchUserData = (req: IRequest, res: Response) => {
