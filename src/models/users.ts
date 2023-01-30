@@ -1,4 +1,6 @@
-import mongoose from 'mongoose';
+/* eslint-disable quotes */
+import mongoose from "mongoose";
+import validator from "validator";
 
 type User = any;
 
@@ -17,10 +19,14 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String, // ссылка — это строка
+    validate: {
+      validator: (v: string) => validator.isURL(v),
+      message: "Некорректный URL",
+    },
     required: true, // ссылка — обязательное поле
   },
 });
 
 // TS-интерфейс модели User
 
-export default mongoose.model<User>('user', userSchema);
+export default mongoose.model<User>("user", userSchema);

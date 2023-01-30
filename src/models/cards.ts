@@ -1,5 +1,6 @@
 /* eslint-disable quotes */
 import mongoose from "mongoose";
+import validator from "validator";
 
 type Card = any;
 
@@ -12,6 +13,10 @@ const cardSchema = new mongoose.Schema({
   },
   link: {
     type: String, // ссылка — это строка
+    validate: {
+      validator: (v: string) => validator.isURL(v),
+      message: "Некорректный URL",
+    },
     required: true, // ссылка — обязательное поле
   },
   owner: {
