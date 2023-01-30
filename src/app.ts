@@ -8,10 +8,6 @@ import { IRequest } from "./types";
 import usersRouter from "./routes/users";
 import cardsRouter from "./routes/cards";
 
-// export interface IRequest extends Request {
-//   user?: Record<string, string>;
-// }
-
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
 
