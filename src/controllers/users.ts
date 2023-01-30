@@ -29,16 +29,17 @@ export const getUsers = (req: Request, res: Response) =>
 export const getUser = (req: Request, res: Response) => {
   const { _id } = req.params;
   return User.find({ _id: new ObjectId(_id) })
-    .then((user) => {
-      if (!user.length) {
+    .orFail(new Error(MESSAGE_404))
+    .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
+    .catch((err) => {
+      if (err.message === MESSAGE_404) {
         res
           .status(ERROR_CODE_UNCORRECT_RESPONSE_DATA)
           .send({ message: MESSAGE_404 });
       } else {
-        res.status(CODE_SUCCESS_RESPONSE).send({ data: user });
+        errorHandler(err, res);
       }
-    })
-    .catch((err) => errorHandler(err, res));
+    });
 };
 
 export const patchUserData = (req: IRequest, res: Response) => {
