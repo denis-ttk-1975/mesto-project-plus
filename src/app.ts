@@ -2,6 +2,7 @@
 import express, { Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import rateLimit from "express-rate-limit";
+import helmet from "helmet";
 
 import { IRequest } from "./types";
 import usersRouter from "./routes/users";
@@ -24,7 +25,7 @@ const limiter = rateLimit({
 
 // Apply the rate limiting middleware to all requests
 app.use(limiter);
-
+app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
