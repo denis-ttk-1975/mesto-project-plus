@@ -1,3 +1,4 @@
+/* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable quotes */
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
@@ -15,9 +16,10 @@ export const createUser = (req: Request, res: Response) => {
     .catch((err) => errorHandler(err, res));
 };
 
-export const getUsers = (req: Request, res: Response) => User.find({})
-  .then((users) => res.send({ data: users }))
-  .catch((err) => errorHandler(err, res));
+export const getUsers = (req: Request, res: Response) =>
+  User.find({})
+    .then((users) => res.send({ data: users }))
+    .catch((err) => errorHandler(err, res));
 
 export const getUser = (req: Request, res: Response) => {
   const { _id } = req.params;
@@ -38,7 +40,7 @@ export const patchUserData = (req: IRequest, res: Response) => {
   const userId = req.user?._id;
   const { name, about } = req.body;
 
-  return User.findByIdAndUpdate(userId, { name, about })
+  return User.findByIdAndUpdate(userId, { name, about }, { new: true })
     .then((user) => res.send({ data: user }))
     .catch((err) => errorHandler(err, res));
 };
@@ -47,7 +49,7 @@ export const patchUserAvatar = (req: IRequest, res: Response) => {
   const userId = req.user?._id;
   const { avatar } = req.body;
 
-  return User.findByIdAndUpdate(userId, { avatar })
+  return User.findByIdAndUpdate(userId, { avatar }, { new: true })
     .then((user) => res.send({ data: user }))
     .catch((err) => errorHandler(err, res));
 };
