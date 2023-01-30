@@ -7,19 +7,23 @@ import { ObjectId } from "mongodb";
 import User from "../models/users";
 import { IRequest } from "../types";
 import errorHandler from "../utils";
-import { ERROR_CODE_UNCORRECT_RESPONSE_DATA, MESSAGE_404 } from "../constants";
+import {
+  ERROR_CODE_UNCORRECT_RESPONSE_DATA,
+  MESSAGE_404,
+  CODE_SUCCESS_RESPONSE,
+} from "../constants";
 
 export const createUser = (req: Request, res: Response) => {
   const { name, about, avatar } = req.body;
 
   return User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
     .catch((err) => errorHandler(err, res));
 };
 
 export const getUsers = (req: Request, res: Response) =>
   User.find({})
-    .then((users) => res.send({ data: users }))
+    .then((users) => res.status(CODE_SUCCESS_RESPONSE).send({ data: users }))
     .catch((err) => errorHandler(err, res));
 
 export const getUser = (req: Request, res: Response) => {
@@ -31,7 +35,7 @@ export const getUser = (req: Request, res: Response) => {
           .status(ERROR_CODE_UNCORRECT_RESPONSE_DATA)
           .send({ message: MESSAGE_404 });
       } else {
-        res.send({ data: user });
+        res.status(CODE_SUCCESS_RESPONSE).send({ data: user });
       }
     })
     .catch((err) => errorHandler(err, res));
@@ -46,7 +50,7 @@ export const patchUserData = (req: IRequest, res: Response) => {
     { name, about },
     { new: true, runValidators: true }
   )
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
     .catch((err) => errorHandler(err, res));
 };
 
@@ -59,6 +63,6 @@ export const patchUserAvatar = (req: IRequest, res: Response) => {
     { avatar },
     { new: true, runValidators: true }
   )
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
     .catch((err) => errorHandler(err, res));
 };
