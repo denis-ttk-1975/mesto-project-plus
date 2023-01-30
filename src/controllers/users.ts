@@ -15,11 +15,9 @@ export const createUser = (req: Request, res: Response) => {
     .catch((err) => errorHandler(err, res));
 };
 
-export const getUsers = (req: Request, res: Response) => {
-  return User.find({})
-    .then((users) => res.send({ data: users }))
-    .catch((err) => errorHandler(err, res));
-};
+export const getUsers = (req: Request, res: Response) => User.find({})
+  .then((users) => res.send({ data: users }))
+  .catch((err) => errorHandler(err, res));
 
 export const getUser = (req: Request, res: Response) => {
   const { _id } = req.params;

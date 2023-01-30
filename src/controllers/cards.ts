@@ -1,3 +1,6 @@
+/* eslint-disable comma-dangle */
+/* eslint-disable consistent-return */
+/* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable quotes */
 
 import { Request, Response } from "express";
@@ -19,11 +22,10 @@ export const createCard = (req: IRequest, res: Response) => {
     .catch((err) => errorHandler(err, res));
 };
 
-export const getCards = (req: Request, res: Response) => {
-  return Card.find({})
+export const getCards = (req: Request, res: Response) =>
+  Card.find({})
     .then((cards) => res.send({ data: cards }))
     .catch((err) => errorHandler(err, res));
-};
 
 export const deleteCard = (req: Request, res: Response) => {
   const { cardId } = req.params;
@@ -78,7 +80,7 @@ export const dislikeCard = (req: IRequest, res: Response) => {
 
   return Card.findByIdAndUpdate(
     cardId,
-    { $pull: { likes: userId } }, // убрать _id из массива
+    { $pull: { likes: userId } },
     { new: true }
   )
     .then((card) => res.send({ data: card }))
