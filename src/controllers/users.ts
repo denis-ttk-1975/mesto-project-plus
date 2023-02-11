@@ -4,11 +4,12 @@
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt"; // импортируем bcrypt
+import jwt from "jsonwebtoken";
 
 import User from "../models/users";
-import { IRequest } from "../types";
+import { IRequest, IUserData } from "../types";
 import errorHandler from "../utils";
-import { MESSAGE_404, CODE_SUCCESS_RESPONSE } from "../constants";
+import { MESSAGE_401, MESSAGE_404, CODE_SUCCESS_RESPONSE } from "../constants";
 
 export const createUser = (req: Request, res: Response) => {
   const { name, about, avatar, email, password } = req.body;
@@ -74,5 +75,39 @@ export const patchUserAvatar = (req: IRequest, res: Response) => {
     { new: true, runValidators: true }
   )
     .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
+    .catch((err) => errorHandler(err, res));
+};
+
+export const login = (req: IRequest, res: Response) => {
+  const { email, password } = req.body;
+  let userData: IUserData;
+  return User.findOne({ email })
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new Error(MESSAGE_401));
+      }
+      console.log("User exist");
+      userData = user;
+      return bcrypt.compare(password, user.password);
+    })
+    .then((matched) => {
+      if (!matched) {
+        // хеши не совпали — отклоняем промис
+        return Promise.reject(new Error(MESSAGE_401));
+      }
+
+      // аутентификация успешна
+      const token = jwt.sign({ _id: userData._id }, "some-secret-key", {
+        expiresIn: "7d",
+      });
+
+      // вернём токен
+      res
+        .status(CODE_SUCCESS_RESPONSE)
+        .cookie("jwt", token, {
+          httpOnly: true,
+        })
+        .end();
+    })
     .catch((err) => errorHandler(err, res));
 };

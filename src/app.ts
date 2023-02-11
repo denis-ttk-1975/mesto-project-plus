@@ -8,6 +8,8 @@ import { IRequest } from "./types";
 import usersRouter from "./routes/users";
 import cardsRouter from "./routes/cards";
 
+import { createUser, login } from "./controllers/users";
+
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
 
@@ -35,10 +37,12 @@ app.use((req: IRequest, res: Response, next: NextFunction) => {
   next();
 });
 
+app.post("/signin", login);
+app.post("/signup", createUser);
 app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
-  // console.log(`App listening on port ${PORT}`);
+  console.log(`App listening on port ${PORT}`);
 });
