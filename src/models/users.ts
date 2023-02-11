@@ -25,6 +25,19 @@ const userSchema = new mongoose.Schema({
     },
     required: true, // ссылка — обязательное поле
   },
+  email: {
+    type: String,
+    validate: {
+      validator: (v: string) => validator.isEmail(v),
+      message: "Некорректный Email",
+    },
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
 });
 
 // TS-интерфейс модели User

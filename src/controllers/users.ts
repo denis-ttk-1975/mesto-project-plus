@@ -10,9 +10,15 @@ import errorHandler from "../utils";
 import { MESSAGE_404, CODE_SUCCESS_RESPONSE } from "../constants";
 
 export const createUser = (req: Request, res: Response) => {
-  const { name, about, avatar } = req.body;
+  const { name, about, avatar, email, password } = req.body;
 
-  return User.create({ name, about, avatar })
+  return User.create({
+    name,
+    about,
+    avatar,
+    email,
+    password,
+  })
     .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
     .catch((err) => errorHandler(err, res));
 };
