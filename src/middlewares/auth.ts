@@ -2,6 +2,7 @@
 /* eslint-disable quotes */
 import jwt from "jsonwebtoken";
 import { Response, NextFunction } from "express";
+import { ObjectId } from "mongoose";
 
 import { IRequest } from "../types";
 import {
@@ -25,13 +26,14 @@ export default (req: IRequest, res: Response, next: NextFunction) => {
 
   try {
     payload = jwt.verify(token, "some-secret-key");
+    console.log("payload: ", payload);
   } catch (err) {
     return res
       .status(ERROR_CODE_EMAIL_OR_PASSWORD_NOT_FOUND)
       .send({ message: MESSAGE_401_AUTHORIZATION_NEEDED });
   }
 
-  req.user = payload;
+  req.user = payload as { _id: ObjectId; iat: any; exp: any };
 
   next();
 };

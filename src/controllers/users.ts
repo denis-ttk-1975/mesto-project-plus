@@ -117,10 +117,12 @@ export const login = (req: IRequest, res: Response) => {
     .catch((err) => errorHandler(err, res));
 };
 
-// export const getCurrentUser = (req: Request, res: Response) => {
-//   const _id = req.user._id;
-//   return User.find({ _id: new ObjectId(_id) })
-//     .orFail(new Error(MESSAGE_404))
-//     .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
-//     .catch((err) => errorHandler(err, res));
-// };
+export const getCurrentUser = (req: IRequest, res: Response) => {
+  console.log("req.user: ", req.user);
+  const _id = req.user?._id;
+
+  return User.findById(_id)
+    .orFail(new Error(MESSAGE_401_USER_NOT_FOUND))
+    .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
+    .catch((err) => errorHandler(err, res));
+};

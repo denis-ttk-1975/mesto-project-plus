@@ -1,9 +1,9 @@
 /* eslint-disable quotes */
 import { Request } from "express";
-import { JwtPayload } from "jsonwebtoken";
+import { ObjectId } from "mongoose";
 
 export interface IRequest extends Request {
-  user?: String | JwtPayload;
+  user?: { _id: ObjectId; iat: any; exp: any };
 }
 
 export interface IUserData {
