@@ -89,6 +89,7 @@ export const login = (req: IRequest, res: Response) => {
   const { email, password } = req.body;
   let userData: IUserData;
   return User.findOne({ email })
+    .select("+password")
     .orFail(new Error(MESSAGE_401_USER_NOT_FOUND))
     .then((user) => {
       console.log("User exist");
