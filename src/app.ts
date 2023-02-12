@@ -10,6 +10,7 @@ import cardsRouter from "./routes/cards";
 
 import { createUser, login } from "./controllers/users";
 import auth from "./middlewares/auth";
+import { requestLogger, errorLogger } from "./middlewares/logger";
 
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
@@ -36,6 +37,8 @@ mongoose.connect("mongodb://localhost:27017/mestodb");
 //   next();
 // });
 
+app.use(requestLogger);
+
 app.post("/signin", login);
 app.post("/signup", createUser);
 
@@ -43,6 +46,8 @@ app.use(auth);
 
 app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
+
+app.use(errorLogger);
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает

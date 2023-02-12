@@ -15,9 +15,11 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.15",
+    "@types/express-winston": "^4.0.0",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^18.11.18",
     "@types/validator": "^13.7.11",
+    "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",
     "eslint": "^8.32.0",
@@ -31,10 +33,12 @@
     "bcrypt": "^5.1.0",
     "express": "^4.18.2",
     "express-rate-limit": "^6.7.0",
+    "express-winston": "^4.2.0",
     "helmet": "^6.0.1",
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^4.13.0",
     "mongoose": "^6.8.4",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "winston": "^3.8.2"
   }
 }
