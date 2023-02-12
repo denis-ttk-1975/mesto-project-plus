@@ -7,15 +7,15 @@ type User = any;
 const userSchema = new mongoose.Schema({
   name: {
     type: String, // имя — это строка
-    required: true, // имя — обязательное поле
     minlength: 2,
     maxlength: 30,
+    default: "Жак-Ив Кусто",
   },
   about: {
     type: String, // about — это строка
-    required: true, // about — обязательное поле
     minlength: 2,
     maxlength: 200,
+    default: "Исследователь",
   },
   avatar: {
     type: String, // ссылка — это строка
@@ -23,7 +23,22 @@ const userSchema = new mongoose.Schema({
       validator: (v: string) => validator.isURL(v),
       message: "Некорректный URL",
     },
-    required: true, // ссылка — обязательное поле
+    default:
+      "https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png",
+  },
+  email: {
+    type: String,
+    validate: {
+      validator: (v: string) => validator.isEmail(v),
+      message: "Некорректный Email",
+    },
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+    select: false,
   },
 });
 

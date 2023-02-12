@@ -1,12 +1,19 @@
 /* eslint-disable quotes */
-import express, { Response, NextFunction } from "express";
+import express from "express";
 import mongoose from "mongoose";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 
-import { IRequest } from "./types";
+// import { IRequest } from "./types";
 import usersRouter from "./routes/users";
 import cardsRouter from "./routes/cards";
+
+import { createUser, login } from "./controllers/users";
+import auth from "./middlewares/auth";
+import { requestLogger, errorLogger } from "./middlewares/logger";
+import errorHandler from "./middlewares/errorHandler";
+
+import { validateCreateUser, validateLogin } from "./validationViaCelebrate";
 
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
@@ -27,18 +34,27 @@ app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect("mongodb://localhost:27017/mestodb");
 
-app.use((req: IRequest, res: Response, next: NextFunction) => {
-  req.user = {
-    _id: "63d036d835c09ee215e135ca",
-  };
+// app.use((req: IRequest, res: Response, next: NextFunction) => {
+//   req.user = "63d036d835c09ee215e135ca";
 
-  next();
-});
+//   next();
+// });
+
+app.use(requestLogger);
+
+app.post("/signin", validateLogin, login);
+app.post("/signup", validateCreateUser, createUser);
+
+app.use(auth);
 
 app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
 
+app.use(errorLogger);
+
+app.use(errorHandler);
+
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
-  // console.log(`App listening on port ${PORT}`);
+  console.log(`App listening on port ${PORT}`);
 });
