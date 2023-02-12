@@ -1,8 +1,9 @@
 /* eslint-disable quotes */
 import { Request } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
 export interface IRequest extends Request {
-  user?: Record<string, string>;
+  user?: String | JwtPayload;
 }
 
 export interface IUserData {

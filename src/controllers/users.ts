@@ -1,3 +1,6 @@
+/* eslint-disable consistent-return */
+/* eslint-disable function-paren-newline */
+/* eslint-disable object-curly-newline */
 /* eslint-disable comma-dangle */
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable quotes */
@@ -9,7 +12,11 @@ import jwt from "jsonwebtoken";
 import User from "../models/users";
 import { IRequest, IUserData } from "../types";
 import errorHandler from "../utils";
-import { MESSAGE_401, MESSAGE_404, CODE_SUCCESS_RESPONSE } from "../constants";
+import {
+  MESSAGE_401_USER_NOT_FOUND,
+  MESSAGE_404,
+  CODE_SUCCESS_RESPONSE,
+} from "../constants";
 
 export const createUser = (req: Request, res: Response) => {
   const { name, about, avatar, email, password } = req.body;
@@ -53,7 +60,7 @@ export const getUser = (req: Request, res: Response) => {
 };
 
 export const patchUserData = (req: IRequest, res: Response) => {
-  const userId = req.user?._id;
+  const userId = req.user;
   const { name, about } = req.body;
 
   return User.findByIdAndUpdate(
@@ -66,7 +73,7 @@ export const patchUserData = (req: IRequest, res: Response) => {
 };
 
 export const patchUserAvatar = (req: IRequest, res: Response) => {
-  const userId = req.user?._id;
+  const userId = req.user;
   const { avatar } = req.body;
 
   return User.findByIdAndUpdate(
@@ -82,10 +89,8 @@ export const login = (req: IRequest, res: Response) => {
   const { email, password } = req.body;
   let userData: IUserData;
   return User.findOne({ email })
+    .orFail(new Error(MESSAGE_401_USER_NOT_FOUND))
     .then((user) => {
-      if (!user) {
-        return Promise.reject(new Error(MESSAGE_401));
-      }
       console.log("User exist");
       userData = user;
       return bcrypt.compare(password, user.password);
@@ -93,7 +98,7 @@ export const login = (req: IRequest, res: Response) => {
     .then((matched) => {
       if (!matched) {
         // хеши не совпали — отклоняем промис
-        return Promise.reject(new Error(MESSAGE_401));
+        return Promise.reject(new Error(MESSAGE_401_USER_NOT_FOUND));
       }
 
       // аутентификация успешна
@@ -111,3 +116,11 @@ export const login = (req: IRequest, res: Response) => {
     })
     .catch((err) => errorHandler(err, res));
 };
+
+// export const getCurrentUser = (req: Request, res: Response) => {
+//   const _id = req.user._id;
+//   return User.find({ _id: new ObjectId(_id) })
+//     .orFail(new Error(MESSAGE_404))
+//     .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
+//     .catch((err) => errorHandler(err, res));
+// };
