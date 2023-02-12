@@ -47,24 +47,6 @@ export const deleteCard = (req: IRequest, res: Response) => {
       );
     })
     .catch((err) => errorHandler(err, res));
-
-  // Card.findById(cardId)
-  //   .orFail(new Error(MESSAGE_404))
-  //   .then((cardInformation) => {
-  //     if (cardInformation?.owner.toString() !== userId) {
-  //       return new Error(MESSAGE_403);
-  //     }
-  //   })
-  //   .catch((err) => errorHandler(err, res));
-
-  // return Card.findByIdAndRemove(cardId)
-  //   .orFail(new Error(MESSAGE_404))
-  //   .then(() =>
-  //     res
-  //       .status(CODE_SUCCESS_RESPONSE)
-  //       .send({ message: `Карточка ${cardId} удалена` })
-  //   )
-  //   .catch((err) => errorHandler(err, res));
 };
 
 export const likeCard = (req: IRequest, res: Response) => {

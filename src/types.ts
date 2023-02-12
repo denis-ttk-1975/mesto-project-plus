@@ -7,15 +7,15 @@ export interface IRequest extends Request {
 }
 
 export interface IError extends Error {
-  code: Number;
+  code?: number;
 }
 
 export interface IUserData {
-  name: String;
-  about: String;
-  avatar: String;
-  email: String;
-  password: String;
-  _id: String;
-  __v: Number;
+  name: string;
+  about: string;
+  avatar: string;
+  email: string;
+  password: string;
+  _id: string;
+  __v: number;
 }

@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { Response, NextFunction } from "express";
 import { ObjectId } from "mongoose";
 
-import { IRequest } from "../types";
+import { IRequest, IError } from "../types";
 import {
   MESSAGE_401_AUTHORIZATION_NEEDED,
   ERROR_CODE_EMAIL_OR_PASSWORD_NOT_FOUND,
@@ -27,10 +27,12 @@ export default (req: IRequest, res: Response, next: NextFunction) => {
   try {
     payload = jwt.verify(token, "some-secret-key");
     console.log("payload: ", payload);
-  } catch (err) {
-    return res
-      .status(ERROR_CODE_EMAIL_OR_PASSWORD_NOT_FOUND)
-      .send({ message: MESSAGE_401_AUTHORIZATION_NEEDED });
+  } catch (e) {
+    const err: IError = new Error(MESSAGE_401_AUTHORIZATION_NEEDED);
+    err.code = ERROR_CODE_EMAIL_OR_PASSWORD_NOT_FOUND;
+    console.log("err.code: ", err.code);
+
+    next(err);
   }
 
   req.user = payload as { _id: ObjectId; iat: any; exp: any };

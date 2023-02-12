@@ -4,21 +4,23 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable quotes */
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt"; // импортируем bcrypt
 import jwt from "jsonwebtoken";
 
 import User from "../models/users";
-import { IRequest, IUserData } from "../types";
-import errorHandler from "../utils";
+import { IRequest, IUserData, IError } from "../types";
 import {
   MESSAGE_401_USER_NOT_FOUND,
   MESSAGE_404,
   CODE_SUCCESS_RESPONSE,
+  MESSAGE_401_AUTHORIZATION_NEEDED,
+  ERROR_CODE_EMAIL_OR_PASSWORD_NOT_FOUND,
+  ERROR_CODE_DATA_NOT_FOUND,
 } from "../constants";
 
-export const createUser = (req: Request, res: Response) => {
+export const createUser = (req: Request, res: Response, next: NextFunction) => {
   const { name, about, avatar, email, password } = req.body;
 
   return bcrypt
@@ -33,7 +35,7 @@ export const createUser = (req: Request, res: Response) => {
       })
     )
     .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => next(err));
 
   // return User.create({
   //   name,
@@ -46,20 +48,27 @@ export const createUser = (req: Request, res: Response) => {
   //   .catch((err) => errorHandler(err, res));
 };
 
-export const getUsers = (req: Request, res: Response) =>
+export const getUsers = (req: Request, res: Response, next: NextFunction) =>
   User.find({})
     .then((users) => res.status(CODE_SUCCESS_RESPONSE).send({ data: users }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => next(err));
 
-export const getUser = (req: Request, res: Response) => {
+export const getUser = (req: Request, res: Response, next: NextFunction) => {
   const { _id } = req.params;
+  const err: IError = new Error(MESSAGE_404);
+  err.code = ERROR_CODE_DATA_NOT_FOUND;
+
   return User.find({ _id: new ObjectId(_id) })
     .orFail(new Error(MESSAGE_404))
     .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
-    .catch((err) => errorHandler(err, res));
+    .catch(() => next(err));
 };
 
-export const patchUserData = (req: IRequest, res: Response) => {
+export const patchUserData = (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
   const userId = req.user;
   const { name, about } = req.body;
 
@@ -69,10 +78,14 @@ export const patchUserData = (req: IRequest, res: Response) => {
     { new: true, runValidators: true }
   )
     .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => next(err));
 };
 
-export const patchUserAvatar = (req: IRequest, res: Response) => {
+export const patchUserAvatar = (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
   const userId = req.user;
   const { avatar } = req.body;
 
@@ -82,15 +95,18 @@ export const patchUserAvatar = (req: IRequest, res: Response) => {
     { new: true, runValidators: true }
   )
     .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => next(err));
 };
 
-export const login = (req: IRequest, res: Response) => {
+export const login = (req: IRequest, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
   let userData: IUserData;
+  const err: IError = new Error(MESSAGE_401_USER_NOT_FOUND);
+  err.code = ERROR_CODE_EMAIL_OR_PASSWORD_NOT_FOUND;
+
   return User.findOne({ email })
     .select("+password")
-    .orFail(new Error(MESSAGE_401_USER_NOT_FOUND))
+    .orFail(err)
     .then((user) => {
       console.log("User exist");
       userData = user;
@@ -99,7 +115,7 @@ export const login = (req: IRequest, res: Response) => {
     .then((matched) => {
       if (!matched) {
         // хеши не совпали — отклоняем промис
-        return Promise.reject(new Error(MESSAGE_401_USER_NOT_FOUND));
+        return Promise.reject(err);
       }
 
       // аутентификация успешна
@@ -115,15 +131,21 @@ export const login = (req: IRequest, res: Response) => {
         })
         .end();
     })
-    .catch((err) => errorHandler(err, res));
+    .catch(() => next(err));
 };
 
-export const getCurrentUser = (req: IRequest, res: Response) => {
+export const getCurrentUser = (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
   console.log("req.user: ", req.user);
   const _id = req.user?._id;
+  const err: IError = new Error(MESSAGE_401_AUTHORIZATION_NEEDED);
+  err.code = ERROR_CODE_EMAIL_OR_PASSWORD_NOT_FOUND;
 
   return User.findById(_id)
-    .orFail(new Error(MESSAGE_401_USER_NOT_FOUND))
+    .orFail(err)
     .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
-    .catch((err) => errorHandler(err, res));
+    .catch(() => next(err));
 };

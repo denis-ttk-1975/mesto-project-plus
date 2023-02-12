@@ -11,6 +11,7 @@ import cardsRouter from "./routes/cards";
 import { createUser, login } from "./controllers/users";
 import auth from "./middlewares/auth";
 import { requestLogger, errorLogger } from "./middlewares/logger";
+import errorHandler from "./middlewares/errorHandler";
 
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
@@ -48,6 +49,8 @@ app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
 
 app.use(errorLogger);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает

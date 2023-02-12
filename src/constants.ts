@@ -16,3 +16,7 @@ export const MESSAGE_403 = "отказано в доступе";
 export const MESSAGE_404 = "карточка или пользователь не найден";
 export const MESSAGE_409 = "пользователь уже существует";
 export const MESSAGE_500 = "ошибка по умолчанию";
+
+export const httpRegex =
+  // eslint-disable-next-line no-useless-escape
+  /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
