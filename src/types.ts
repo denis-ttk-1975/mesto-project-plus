@@ -6,6 +6,10 @@ export interface IRequest extends Request {
   user?: { _id: ObjectId; iat: any; exp: any };
 }
 
+export interface IError extends Error {
+  code: Number;
+}
+
 export interface IUserData {
   name: String;
   about: String;
