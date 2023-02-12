@@ -4,41 +4,57 @@
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable quotes */
 
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
 import Card from "../models/cards";
-import errorHandler from "../utils";
-import { MESSAGE_403, MESSAGE_404, CODE_SUCCESS_RESPONSE } from "../constants";
+import {
+  MESSAGE_403,
+  MESSAGE_404,
+  CODE_SUCCESS_RESPONSE,
+  ERROR_CODE_ACCESS_DENIED,
+  ERROR_CODE_DATA_NOT_FOUND,
+} from "../constants";
+import { IRequest, IError } from "../types";
 
-interface IRequest extends Request {
-  user?: Record<string, string>;
-}
-
-export const createCard = (req: IRequest, res: Response) => {
+export const createCard = (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
   const { name, link } = req.body;
   const userId = req.user?._id;
 
   return Card.create({ name, link, owner: userId })
     .then((card) => res.status(CODE_SUCCESS_RESPONSE).send({ data: card }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => next(err));
 };
 
-export const getCards = (req: Request, res: Response) =>
+export const getCards = (req: Request, res: Response, next: NextFunction) =>
   Card.find({})
     .then((cards) => res.status(CODE_SUCCESS_RESPONSE).send({ data: cards }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => next(err));
 
-export const deleteCard = (req: IRequest, res: Response) => {
+export const deleteCard = (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
   const { cardId } = req.params;
   console.log("cardId: ", cardId);
   const userId = req.user?._id;
   console.log("userId: ", userId);
 
+  const err403: IError = new Error(MESSAGE_403);
+  err403.code = ERROR_CODE_ACCESS_DENIED;
+
+  const err404: IError = new Error(MESSAGE_404);
+  err404.code = ERROR_CODE_DATA_NOT_FOUND;
+
   return Card.findById(cardId)
-    .orFail(new Error(MESSAGE_404))
+    .orFail(err404)
     .then((cardInformation) => {
       if (cardInformation?.owner.toString() !== userId) {
-        throw new Error(MESSAGE_403);
+        throw err403;
       }
       Card.findByIdAndRemove(cardId).then(() =>
         res
@@ -46,34 +62,45 @@ export const deleteCard = (req: IRequest, res: Response) => {
           .send({ message: `Карточка ${cardId} удалена` })
       );
     })
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => next(err));
 };
 
-export const likeCard = (req: IRequest, res: Response) => {
+export const likeCard = (req: IRequest, res: Response, next: NextFunction) => {
   const userId = req.user?._id;
 
   const { cardId } = req.params;
+
+  const err404: IError = new Error(MESSAGE_404);
+  err404.code = ERROR_CODE_DATA_NOT_FOUND;
 
   return Card.findByIdAndUpdate(
     cardId,
     { $addToSet: { likes: userId } }, // добавить _id в массив, если его там нет
     { new: true }
   )
-    .orFail(new Error(MESSAGE_404))
+    .orFail(err404)
     .then((card) => res.status(CODE_SUCCESS_RESPONSE).send({ data: card }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => next(err));
 };
 
-export const dislikeCard = (req: IRequest, res: Response) => {
+export const dislikeCard = (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
   const userId = req.user?._id;
 
   const { cardId } = req.params;
+
+  const err404: IError = new Error(MESSAGE_404);
+  err404.code = ERROR_CODE_DATA_NOT_FOUND;
 
   return Card.findByIdAndUpdate(
     cardId,
     { $pull: { likes: userId } },
     { new: true }
   )
+    .orFail(err404)
     .then((card) => res.status(CODE_SUCCESS_RESPONSE).send({ data: card }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => next(err));
 };

@@ -2,8 +2,6 @@
 import mongoose from "mongoose";
 import validator from "validator";
 
-// import { httpRegex } from "../constants";
-
 type User = any;
 
 const userSchema = new mongoose.Schema({

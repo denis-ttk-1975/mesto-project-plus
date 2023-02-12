@@ -36,16 +36,6 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
     )
     .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
     .catch((err) => next(err));
-
-  // return User.create({
-  //   name,
-  //   about,
-  //   avatar,
-  //   email,
-  //   password,
-  // })
-  //   .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
-  //   .catch((err) => errorHandler(err, res));
 };
 
 export const getUsers = (req: Request, res: Response, next: NextFunction) =>
