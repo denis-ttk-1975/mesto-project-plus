@@ -4,10 +4,12 @@ import { Response } from "express";
 import {
   ERROR_CODE_INCORRECT_RESPONSE_DATA,
   ERROR_CODE_EMAIL_OR_PASSWORD_NOT_FOUND,
+  ERROR_CODE_ACCESS_DENIED,
   SERVER_ERROR_CODE,
   ERROR_CODE_DATA_NOT_FOUND,
   MESSAGE_400,
   MESSAGE_401_USER_NOT_FOUND,
+  MESSAGE_403,
   MESSAGE_404,
   MESSAGE_500,
 } from "./constants";
@@ -19,6 +21,8 @@ const errorHandler = (err: Error, res: Response) => {
     res
       .status(ERROR_CODE_EMAIL_OR_PASSWORD_NOT_FOUND)
       .send({ message: MESSAGE_401_USER_NOT_FOUND });
+  } else if (err.message === MESSAGE_403) {
+    res.status(ERROR_CODE_ACCESS_DENIED).send({ message: MESSAGE_403 });
   } else if (err.name === "ValidationError" || err.name === "CastError") {
     res
       .status(ERROR_CODE_INCORRECT_RESPONSE_DATA)

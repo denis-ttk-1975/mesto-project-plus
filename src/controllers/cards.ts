@@ -8,7 +8,7 @@ import { Request, Response } from "express";
 
 import Card from "../models/cards";
 import errorHandler from "../utils";
-import { MESSAGE_404, CODE_SUCCESS_RESPONSE } from "../constants";
+import { MESSAGE_403, MESSAGE_404, CODE_SUCCESS_RESPONSE } from "../constants";
 
 interface IRequest extends Request {
   user?: Record<string, string>;
@@ -28,17 +28,43 @@ export const getCards = (req: Request, res: Response) =>
     .then((cards) => res.status(CODE_SUCCESS_RESPONSE).send({ data: cards }))
     .catch((err) => errorHandler(err, res));
 
-export const deleteCard = (req: Request, res: Response) => {
+export const deleteCard = (req: IRequest, res: Response) => {
   const { cardId } = req.params;
+  console.log("cardId: ", cardId);
+  const userId = req.user?._id;
+  console.log("userId: ", userId);
 
-  return Card.findByIdAndRemove(cardId)
+  return Card.findById(cardId)
     .orFail(new Error(MESSAGE_404))
-    .then(() =>
-      res
-        .status(CODE_SUCCESS_RESPONSE)
-        .send({ message: `Карточка ${cardId} удалена` })
-    )
+    .then((cardInformation) => {
+      if (cardInformation?.owner.toString() !== userId) {
+        throw new Error(MESSAGE_403);
+      }
+      Card.findByIdAndRemove(cardId).then(() =>
+        res
+          .status(CODE_SUCCESS_RESPONSE)
+          .send({ message: `Карточка ${cardId} удалена` })
+      );
+    })
     .catch((err) => errorHandler(err, res));
+
+  // Card.findById(cardId)
+  //   .orFail(new Error(MESSAGE_404))
+  //   .then((cardInformation) => {
+  //     if (cardInformation?.owner.toString() !== userId) {
+  //       return new Error(MESSAGE_403);
+  //     }
+  //   })
+  //   .catch((err) => errorHandler(err, res));
+
+  // return Card.findByIdAndRemove(cardId)
+  //   .orFail(new Error(MESSAGE_404))
+  //   .then(() =>
+  //     res
+  //       .status(CODE_SUCCESS_RESPONSE)
+  //       .send({ message: `Карточка ${cardId} удалена` })
+  //   )
+  //   .catch((err) => errorHandler(err, res));
 };
 
 export const likeCard = (req: IRequest, res: Response) => {
