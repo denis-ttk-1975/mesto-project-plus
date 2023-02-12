@@ -13,6 +13,8 @@ import auth from "./middlewares/auth";
 import { requestLogger, errorLogger } from "./middlewares/logger";
 import errorHandler from "./middlewares/errorHandler";
 
+import { validateCreateUser, validateLogin } from "./validationViaCelebrate";
+
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
 
@@ -40,8 +42,8 @@ mongoose.connect("mongodb://localhost:27017/mestodb");
 
 app.use(requestLogger);
 
-app.post("/signin", login);
-app.post("/signup", createUser);
+app.post("/signin", validateLogin, login);
+app.post("/signup", validateCreateUser, createUser);
 
 app.use(auth);
 
