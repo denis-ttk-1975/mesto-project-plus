@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import { errors } from "celebrate";
+import dotenv from "dotenv";
 
 // import { IRequest } from "./types";
 import usersRouter from "./routes/users";
@@ -15,6 +16,8 @@ import { requestLogger, errorLogger } from "./middlewares/logger";
 import errorHandler from "./middlewares/errorHandler";
 
 import { validateCreateUser, validateLogin } from "./validationViaCelebrate";
+
+dotenv.config({ path: "./config.env" });
 
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
