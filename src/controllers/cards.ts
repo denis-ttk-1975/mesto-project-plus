@@ -40,9 +40,7 @@ export const deleteCard = (
   next: NextFunction
 ) => {
   const { cardId } = req.params;
-  console.log("cardId: ", cardId);
   const userId = req.user?._id;
-  console.log("userId: ", userId);
 
   const err403: IError = new Error(MESSAGE_403);
   err403.code = ERROR_CODE_ACCESS_DENIED;

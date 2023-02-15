@@ -8,6 +8,7 @@ import { Request, Response, NextFunction } from "express";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt"; // импортируем bcrypt
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
 import User from "../models/users";
 import { IRequest, IUserData, IError } from "../types";
@@ -19,6 +20,9 @@ import {
   ERROR_CODE_EMAIL_OR_PASSWORD_NOT_FOUND,
   ERROR_CODE_DATA_NOT_FOUND,
 } from "../constants";
+
+dotenv.config({ path: "./config.env" });
+const { JWT_SECRET_KEY = "some-secret-key" } = process.env;
 
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
   const { name, about, avatar, email, password } = req.body;
@@ -109,7 +113,7 @@ export const login = (req: IRequest, res: Response, next: NextFunction) => {
       }
 
       // аутентификация успешна
-      const token = jwt.sign({ _id: userData._id }, "some-secret-key", {
+      const token = jwt.sign({ _id: userData._id }, JWT_SECRET_KEY, {
         expiresIn: "7d",
       });
 
@@ -129,7 +133,6 @@ export const getCurrentUser = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("req.user: ", req.user);
   const _id = req.user?._id;
   const err: IError = new Error(MESSAGE_401_AUTHORIZATION_NEEDED);
   err.code = ERROR_CODE_EMAIL_OR_PASSWORD_NOT_FOUND;
