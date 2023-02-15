@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
+import { errors } from "celebrate";
 
 // import { IRequest } from "./types";
 import usersRouter from "./routes/users";
@@ -51,7 +52,7 @@ app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
 
 app.use(errorLogger);
-
+app.use(errors());
 app.use(errorHandler);
 
 app.listen(PORT, () => {
