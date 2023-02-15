@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable function-paren-newline */
 /* eslint-disable comma-dangle */
 /* eslint-disable consistent-return */
