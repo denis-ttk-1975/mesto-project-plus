@@ -15,7 +15,7 @@ export const MESSAGE_401_AUTHORIZATION_NEEDED = "Необходима автор
 export const MESSAGE_403 = "отказано в доступе";
 export const MESSAGE_404 = "карточка или пользователь не найден";
 export const MESSAGE_409 = "пользователь уже существует";
-export const MESSAGE_500 = "ошибка по умолчанию";
+export const MESSAGE_500 = "На сервере произошла ошибка";
 
 export const httpRegex =
   // eslint-disable-next-line no-useless-escape
