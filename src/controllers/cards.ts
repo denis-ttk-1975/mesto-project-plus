@@ -48,18 +48,25 @@ export const deleteCard = (
 
   const err404: IError = new Error(MESSAGE_404);
   err404.code = ERROR_CODE_DATA_NOT_FOUND;
-
-  return Card.findById(cardId)
+  // не смог реализовать с удаление карточки с помощью одного Card.findByIdAndRemove - прошу помощи
+  Card.findById(cardId)
     .orFail(err404)
     .then((cardInformation) => {
       if (cardInformation?.owner.toString() !== userId) {
         throw err403;
+      } else {
+        return Card.deleteOne({ _id: cardInformation._id }).then(() =>
+          res
+            .status(CODE_SUCCESS_RESPONSE)
+            .send({ message: `Карточка ${cardId} удалена` })
+        );
       }
-      Card.findByIdAndRemove(cardId).then(() =>
-        res
-          .status(CODE_SUCCESS_RESPONSE)
-          .send({ message: `Карточка ${cardId} удалена` })
-      );
+
+      // Card.findByIdAndRemove(cardId).then(() =>
+      //   res
+      //     .status(CODE_SUCCESS_RESPONSE)
+      //     .send({ message: `Карточка ${cardId} удалена` })
+      // );
     })
     .catch((err) => next(err));
 };
