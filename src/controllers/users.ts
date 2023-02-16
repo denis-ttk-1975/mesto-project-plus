@@ -19,6 +19,8 @@ import {
   MESSAGE_401_AUTHORIZATION_NEEDED,
   ERROR_CODE_EMAIL_OR_PASSWORD_NOT_FOUND,
   ERROR_CODE_DATA_NOT_FOUND,
+  ERROR_CODE_USER_ALREADY_EXIST,
+  MESSAGE_409,
 } from "../constants";
 
 dotenv.config({ path: "./config.env" });
@@ -26,6 +28,8 @@ const { JWT_SECRET_KEY = "some-secret-key" } = process.env;
 
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
   const { name, about, avatar, email, password } = req.body;
+  const errorUserExist: IError = new Error(MESSAGE_409);
+  errorUserExist.code = ERROR_CODE_USER_ALREADY_EXIST;
 
   return bcrypt
     .hash(password, 10)
@@ -39,7 +43,12 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
       })
     )
     .then((user) => res.status(CODE_SUCCESS_RESPONSE).send({ data: user }))
-    .catch((err) => next(err));
+    .catch((err) => {
+      if (err.code === 11000) {
+        next(errorUserExist);
+      }
+      next(err);
+    });
 };
 
 export const getUsers = (req: Request, res: Response, next: NextFunction) =>
