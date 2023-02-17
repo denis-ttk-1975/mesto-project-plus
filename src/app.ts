@@ -12,7 +12,6 @@ import usersRouter from "./routes/users";
 import cardsRouter from "./routes/cards";
 
 import { createUser, login } from "./controllers/users";
-// import notFoundPage from "./controllers/notFoundPage";
 
 import auth from "./middlewares/auth";
 import { requestLogger, errorLogger } from "./middlewares/logger";

@@ -61,12 +61,6 @@ export const deleteCard = (
             .send({ message: `Карточка ${cardId} удалена` })
         );
       }
-
-      // Card.findByIdAndRemove(cardId).then(() =>
-      //   res
-      //     .status(CODE_SUCCESS_RESPONSE)
-      //     .send({ message: `Карточка ${cardId} удалена` })
-      // );
     })
     .catch((err) => next(err));
 };
