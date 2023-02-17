@@ -3,6 +3,7 @@
 import jwt from "jsonwebtoken";
 import { Response, NextFunction } from "express";
 import { ObjectId } from "mongoose";
+import dotenv from "dotenv";
 
 import { IRequest, IError } from "../types";
 import {
@@ -10,10 +11,11 @@ import {
   ERROR_CODE_EMAIL_OR_PASSWORD_NOT_FOUND,
 } from "../constants";
 
+dotenv.config({ path: "./config.env" });
+const { JWT_SECRET_KEY = "some-secret-key" } = process.env;
+
 export default (req: IRequest, res: Response, next: NextFunction) => {
   const authorization = req.headers.cookie;
-
-  console.log("authorization = ", authorization);
 
   if (!authorization || !authorization.startsWith("jwt=")) {
     return res
@@ -25,12 +27,10 @@ export default (req: IRequest, res: Response, next: NextFunction) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, "some-secret-key");
-    console.log("payload: ", payload);
+    payload = jwt.verify(token, JWT_SECRET_KEY);
   } catch (e) {
     const err: IError = new Error(MESSAGE_401_AUTHORIZATION_NEEDED);
     err.code = ERROR_CODE_EMAIL_OR_PASSWORD_NOT_FOUND;
-    console.log("err.code: ", err.code);
 
     next(err);
   }
